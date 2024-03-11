@@ -1,5 +1,7 @@
 package ru.inno.course.web;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,32 @@ public class ToDoListTests {
     @BeforeEach
     public void setUp() {
         service = new TaskService(URL);
+    }
+
+    @Test
+    @DisplayName("Получение пустого списка задач")
+    public void canGetEmptyTaskList() throws IOException {
+        service.deleteAllTasks();
+        HttpGet getEmpty = new HttpGet(URL);
+        HttpResponse emptyResponce = service.getClient().execute(getEmpty);
+        assertEquals(200, emptyResponce.getStatusLine().getStatusCode());
+        List<Task> emptyTaskList = service.getAllTasks();
+        assertTrue(emptyTaskList.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Получение непустого списка задач")
+    public void canGetTaskList() throws IOException {
+        service.createEmptyTask();
+        service.createEmptyTask();
+        service.createEmptyTask();
+        service.createEmptyTask();
+        service.createEmptyTask();
+        HttpGet getEmpty = new HttpGet(URL);
+        HttpResponse emptyResponce = service.getClient().execute(getEmpty);
+        assertEquals(200, emptyResponce.getStatusLine().getStatusCode());
+        List<Task> emptyTaskList = service.getAllTasks();
+        assertFalse(emptyTaskList.isEmpty());
     }
 
     @Test
@@ -72,7 +100,8 @@ public class ToDoListTests {
         int taskId = taskToBeCompleted.getId();
         Task taskIsCompleted = service.makeTaskCompleted(taskToBeCompleted);
         assertTrue(taskIsCompleted.isCompleted());
-
     }
+
+    
 }
 

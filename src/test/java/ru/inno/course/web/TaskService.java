@@ -27,6 +27,10 @@ public class TaskService {
         this.client = HttpClientBuilder.create().build();
     }
 
+    public HttpClient getClient() {
+        return client;
+    }
+
     public List<Task> getAllTasks() throws IOException {
         HttpGet allTasks = new HttpGet(URL);
         HttpResponse allTasksList = client.execute(allTasks);
